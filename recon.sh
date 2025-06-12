@@ -20,5 +20,12 @@ mkdir -p $OUT
 ./modules/parammine.sh $OUT
 ./modules/xss.sh $OUT
 ./modules/github.sh $DOMAIN $OUT
+./modules/portscan.sh $OUT
+./modules/s3hunt.sh $OUT
+./modules/jssecrets.sh $OUT
+./modules/fuzz.sh $OUT
+./modules/advanced_vulns.sh $OUT
+./modules/cloudmeta.sh $OUT
+./modules/wordlistgen.sh $OUT
 ./modules/vulnsummary.sh $OUT
 ./modules/notify.sh $OUT
