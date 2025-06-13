@@ -16,7 +16,7 @@ mkdir -p $OUT
 ./modules/resolve.sh $OUT
 ./modules/httprobe.sh $OUT
 ./modules/screenshot.sh $OUT
-./modules/nuclei $OUT
+./modules/nuclei.sh $OUT
 ./modules/parammine.sh $OUT
 ./modules/xss.sh $OUT
 ./modules/github.sh $DOMAIN $OUT

@@ -76,13 +76,39 @@ for entry in "${PYTHON_TOOLS[@]}"; do
 	fi
 done
 
-if [[ ":$PATH:" != *":$HOME/go/bin:"* ]]; then
-	export PATH="$HOME/go/bin:$PATH"
-	if ! grep -q 'export PATH="$HOME/go/bin:$PATH"' ~/.bashrc; then
-		echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
+gopath_bin="$HOME/go/bin"
+rcfiles=()
+[ -f "$HOME/.bashrc" ] && rcfiles+=("$HOME/.bashrc")
+[ -f "$HOME/.zshrc" ] && rcfiles+=("$HOME/.zshrc")
+
+for rcfile in "${rcfiles[@]}"; do
+	if ! grep -Fxq 'export PATH="$HOME/go/bin:$PATH"' "$rcfile"; then
+		echo 'export PATH="$HOME/go/bin:$PATH"' >> "$rcfile"
+		echo "Added Go bin path to $rcfile"
+	else
+		echo "$gopath_bin already present in $rcfile"
 	fi
-	echo "Added \$HOME/go/bin to your PATH. Please restart your terminal or run:"
-	echo "     export PATH=\"\$HOME/go/bin:\$PATH\""
+done
+
+# Also export to current session
+if [[ ":$PATH:" != *":$gopath_bin:"* ]]; then
+	export PATH="$gopath_bin:$PATH"
+	echo "Updated current session PATH with $gopath_bin"
+else
+	echo "$gopath_bin is already in your current session PATH"
 fi
 
+# Advise user to reload if current session does not have the path
+if ! echo "$PATH" | grep -q "$gopath_bin"; then
+	echo "Note: You may need to restart your terminal or run:"
+	echo "		export PATH=\"$HOME/go/bin:\$PATH\""
+fi
+
+# Show go bin status and version for debugging
+echo "Go bin directory content (if any):"
+ls "$HOME/go/bin" 2>dev/null || echo "		(No Go tools installed yet)"
+echo "Go version:"
+go version || echo "		(Go not installed or not found)"
+	
 echo -e "\n Setup complete! All tools are ready to use"
+echo "If any tool is not found, try: source $rcfile OR open a new terminal session"
